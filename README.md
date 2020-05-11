@@ -1,4 +1,4 @@
-# react-native-qq [![npm version](https://badge.fury.io/js/react-native-qq.svg)](http://badge.fury.io/js/react-native-qq)
+# zy-react-native-qq [![npm version](https://badge.fury.io/js/zy-react-native-qq.svg)](http://badge.fury.io/js/zy-react-native-qq)
 
 React Native的QQ登录插件, react-native版本需要0.40.0及以上
 
@@ -7,29 +7,29 @@ React Native的QQ登录插件, react-native版本需要0.40.0及以上
 ### 首先安装npm包
 
 ```bash
-yarn add react-native-qq
+yarn add zy-react-native-qq
 ```
 或
 
 ```bash
-npm install react-native-qq --save
+npm install zy-react-native-qq --save
 ```
 
 然后执行
 
 ```bash
-react-native link react-native-qq
+react-native link zy-react-native-qq
 ```
 
 ### 安装iOS工程
 
 在工程target的`Build Phases->Link Binary with Libraries`中加入`libRCTQQAPI.a、libiconv.tbd、libsqlite3.tbd、libz.tbd、libc++.tbd`
 
-在 `Build Settings->Search Paths->Framework Search Paths`（如果你找不到Framework Search Paths，请注意选择Build Settings下方的All，而不是Basic） 中加入路径 `$(SRCROOT)/../node_modules/react-native-qq/ios/RCTQQAPI`
+在 `Build Settings->Search Paths->Framework Search Paths`（如果你找不到Framework Search Paths，请注意选择Build Settings下方的All，而不是Basic） 中加入路径 `$(SRCROOT)/../node_modules/zy-react-native-qq/ios/RCTQQAPI`
 
 在 `Build Settings->Link->Other Linker Flags` 中加入 `-framework "TencentOpenAPI"`
 
-在 `Apple LLVM X.X - Custom Compiler Flags->Link->Other C Flags`中加入 `-isystem "$(SRCROOT)/../node_modules/react-native-qq/ios/RCTQQAPI"`
+在 `Apple LLVM X.X - Custom Compiler Flags->Link->Other C Flags`中加入 `-isystem "$(SRCROOT)/../node_modules/zy-react-native-qq/ios/RCTQQAPI"`
 
 在工程plist文件中加入qq白名单：(ios9以上必须)
 请以文本方式打开Info.plist，在其中添加
@@ -103,7 +103,7 @@ manifestPlaceholders = [
 ### 引入包
 
 ```
-import * as QQAPI from 'react-native-qq';
+import * as QQAPI from 'zy-react-native-qq';
 ```
 
 ### API
@@ -120,7 +120,7 @@ import * as QQAPI from 'react-native-qq';
 {
 	"access_token": "CAF0085A2AB8FDE7903C97F4792ECBC3",
 	"openid": "0E00BA738F6BB55731A5BBC59746E88D"
-	"expires_in": "1458208143094.6"	
+	"expires_in": "1458208143094.6"
 	"oauth_consumer_key": "12345"
 }
 ```
@@ -135,7 +135,7 @@ import * as QQAPI from 'react-native-qq';
 
 ```javascript
 // 分享图文消息
-{	
+{
 	type: 'news',
 	title: 分享标题,
 	description: 描述,
