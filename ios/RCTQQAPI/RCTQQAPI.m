@@ -38,6 +38,11 @@ RCT_EXPORT_MODULE();
     return dispatch_get_main_queue();
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  return NO;
+}
+
 - (NSArray<NSString *> *)supportedEvents
 {
     return @[@"QQ_Resp"];
@@ -238,13 +243,13 @@ RCT_EXPORT_METHOD(logout)
 #pragma mark - qq delegate
 - (void)onReq:(QQBaseReq *)req
 {
-    
+
 }
 
 - (void)onResp:(QQBaseResp *)resp
 {
     if ([resp isKindOfClass:[SendMessageToQQResp class]]) {
-        
+
     }
     NSMutableDictionary *body = @{@"type":@"QQShareResponse"}.mutableCopy;
     body[@"errMsg"] = resp.errorDescription;
@@ -256,13 +261,13 @@ RCT_EXPORT_METHOD(logout)
     }
     body[@"result"] =resp.result;
     body[@"extendInfo"] =resp.extendInfo;
-    
+
     [self sendEventWithName:@"QQ_Resp" body:body];
 }
 
 - (void)isOnlineResponse:(NSDictionary *)response
 {
-    
+
 }
 
 #pragma mark - oauth delegate
@@ -289,7 +294,7 @@ RCT_EXPORT_METHOD(logout)
         body[@"errMsg"] = @"login failed";
     }
     [self sendEventWithName:@"QQ_Resp" body:body];
-    
+
 }
 
 - (void)tencentDidNotNetWork
