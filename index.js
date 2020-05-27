@@ -7,21 +7,6 @@ const { QQAPI } = NativeModules;
 
 const QQAPIEmitter = new NativeEventEmitter(QQAPI);
 
-function translateError(err, result) {
-    if (!err) {
-        return this.resolve(result);
-    }
-    if (typeof err === 'object') {
-        if (err instanceof Error) {
-            return this.reject(ret);
-        }
-        return this.reject(Object.assign(new Error(err.message), { errCode: err.errCode }));
-    } else if (typeof err === 'string') {
-        return this.reject(new Error(err));
-    }
-    this.reject(Object.assign(new Error(), { origin: err }));
-}
-
 export const isQQInstalled = QQAPI.isQQInstalled;
 export const isQQSupportApi = QQAPI.isQQSupportApi;
 
@@ -54,6 +39,10 @@ QQAPIEmitter.addListener('QQ_Resp', resp => {
     savedCallback = undefined;
     callback && callback(resp);
 });
+
+export function registerAppWithUniversalLink(universalLink){
+    QQAPI.registerAppWithUniversalLink(universalLink)
+}
 
 export function login(scopes) {
     return QQAPI.login(scopes)

@@ -8,7 +8,6 @@
 
 #import "RCTQQAPI.h"
 #import <TencentOpenAPI/TencentOAuth.h>
-#import <TencentOpenAPI/TencentOAuthObject.h>
 #import <TencentOpenAPI/QQApiInterface.h>
 #import <TencentOpenAPI/QQApiInterfaceObject.h>
 
@@ -17,7 +16,6 @@
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTImageLoader.h>
 
-//#define NOT_REGISTERED (@"registerApp required.")
 #define INVOKE_FAILED (@"QQ API invoke returns false.")
 
 @interface RCTQQAPI()<QQApiInterfaceDelegate, TencentSessionDelegate> {
@@ -38,14 +36,14 @@ RCT_EXPORT_MODULE();
     return dispatch_get_main_queue();
 }
 
-+ (BOOL)requiresMainQueueSetup
-{
-  return NO;
-}
-
 - (NSArray<NSString *> *)supportedEvents
 {
     return @[@"QQ_Resp"];
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+  return YES;
 }
 
 - (instancetype)init
@@ -53,7 +51,6 @@ RCT_EXPORT_MODULE();
     self = [super init];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenURL:) name:@"RCTOpenURLNotification" object:nil];
-        [self _autoRegisterAPI];
     }
     return self;
 }
@@ -63,14 +60,21 @@ RCT_EXPORT_MODULE();
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)handleOpenURL:(NSNotification *)note
+- (BOOL)handleOpenURL:(NSNotification *)aNotification
 {
-    NSDictionary *userInfo = note.userInfo;
-    NSString *url = userInfo[@"url"];
-    if ([TencentOAuth HandleOpenURL:[NSURL URLWithString:url]]) {
-    }
-    else {
-        [QQApiInterface handleOpenURL:[NSURL URLWithString:url] delegate:self];
+    NSString *aURLString =  [aNotification userInfo][@"url"];
+    NSURL *aURL = [NSURL URLWithString:aURLString];
+
+    if ([TencentOAuth HandleOpenURL:aURL]) {
+        return YES;
+    } else if ([TencentOAuth HandleUniversalLink:aURL]) {
+        return YES;
+    } else if ([QQApiInterface handleOpenURL:aURL delegate:self]) {
+       return YES;
+    } else if ([QQApiInterface handleOpenUniversallink:aURL delegate:self]) {
+       return YES;
+    } else {
+        return NO;
     }
 }
 
@@ -221,7 +225,7 @@ RCT_EXPORT_METHOD(logout)
 }
 
 
-- (void)_autoRegisterAPI
+RCT_EXPORT_METHOD(registerAppWithUniversalLink:(NSString *)universalLink)
 {
     NSString *appId = nil;
     NSArray *list = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleURLTypes"];
@@ -236,8 +240,7 @@ RCT_EXPORT_METHOD(logout)
             }
         }
     }
-    _qqapi = [[TencentOAuth alloc] initWithAppId:appId andDelegate:self];
-
+    _qqapi = [[TencentOAuth alloc] initWithAppId:appId andUniversalLink:universalLink andDelegate:self];
 }
 
 #pragma mark - qq delegate
